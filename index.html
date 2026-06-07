@@ -741,9 +741,11 @@
         /* ── Footer ───────────────────────────────── */
         footer {
             text-align: center;
-            color: var(--text-muted);
+            background: var(--bg-header);
+            color: rgba(255,255,255,0.85);
             font-size: 11px;
-            margin-top: 16px;
+            padding: 16px 24px;
+            margin-top: 0;
         }
     </style>
 </head>
@@ -861,7 +863,7 @@
     </div>
 </div>
 
-<footer>Tenant Name Builder &mdash; v0.1 beta</footer>
+<footer>Tenant Name Builder &mdash; v0.4 beta &middot; Built by Matej Klemen&#269;i&#269; &middot; <a href="https://www.matej.guru" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.75); text-decoration: none;">www.matej.guru</a> &middot; &copy; 2026</footer>
 <div id="toast"></div>
 
 <script>
@@ -877,34 +879,34 @@ const CONFIG = {
             {
                 id: 'p1',
                 name: '[Tool]-[Function]-[AccessLevel]-[Env]-[Instance]',
-                desc: 'Best for smaller organisations with a single tenant. Focuses on what the app does, its access level, and deployment environment. Instance is optional and used when multiple registrations exist for the same workload.',
+                desc: 'Best for single-tenant organisations. Focuses on what the app does, its access level, and deployment environment.',
                 badge: 'GENERIC', badgeColor: 'blue',
                 segments: ['tool', 'function', 'accessLevel', 'environment', 'instance']
             },
             {
                 id: 'p2',
                 name: '[Company]-[Dept]-[Tool]-[Function]-[AccessLevel]-[Env]-[Instance]',
-                desc: 'Best for large organisations with department-level segregation. Company and department identify the owner. AccessLevel distinguishes read-only integrations from write-capable ones for security reviews.',
+                desc: 'Best for large organisations with department-level segregation. Company and department identify ownership.',
                 badge: 'ENTERPRISE', badgeColor: 'teal',
                 segments: ['company', 'department', 'tool', 'function', 'accessLevel', 'environment', 'instance']
             },
             {
                 id: 'p3',
                 name: '[Tool]-[Customer]-[AccessLevel]-[Env]-[Instance]',
-                desc: 'Best for MSPs managing multiple customers. Tool is first for quick filtering by product. AccessLevel helps identify high-risk registrations across customer tenants at a glance.',
+                desc: 'Best for MSPs managing multiple customer tenants. Tool is listed first for quick filtering by product.',
                 badge: 'MSP', badgeColor: 'amber',
                 segments: ['tool', 'company', 'accessLevel', 'environment', 'instance']
             },
             {
                 id: 'p4',
                 name: '[Project]-[Tool]-[AccessLevel]-[Env]-[Instance]',
-                desc: 'Best for time-bound integrations. Project identifies the context rather than the company. AccessLevel and Instance help distinguish parallel project environments.',
+                desc: 'Best for time-bound integrations. Project name identifies the context instead of the company.',
                 badge: 'PROJECT', badgeColor: 'purple',
                 segments: ['project', 'tool', 'accessLevel', 'environment', 'instance']
             }
         ],
         fields: [
-            { id: 'company',     type: 'text',   labelByPattern: { p2: 'Company Name', p3: 'Customer Name' }, label: 'Company / Customer Name', placeholderByPattern: { p2: 'e.g. Contoso, Zava', p3: 'e.g. Contoso, Zava' }, example: 'e.g. Contoso, Zava', patterns: ['p2','p3'], hintByPattern: { p2: 'The name of your organisation or the primary entity that owns this integration. Use a short recognisable abbreviation if the full name is long. In the MSP pattern this identifies the customer tenant this registration belongs to — use the same name consistently across all registrations for that customer.', p3: 'The name of your organisation or the primary entity that owns this integration. Use a short recognisable abbreviation if the full name is long. In the MSP pattern this identifies the customer tenant this registration belongs to — use the same name consistently across all registrations for that customer.' }, hint: 'The name of your organisation or the primary entity that owns this integration. Use a short recognisable abbreviation if the full name is long. In the MSP pattern this identifies the customer tenant this registration belongs to — use the same name consistently across all registrations for that customer.' },
+            { id: 'company',     type: 'text',   labelByPattern: { p2: 'Company Name', p3: 'Customer Name' }, label: 'Company / Customer Name', placeholderByPattern: { p2: 'e.g. Contoso, Zava', p3: 'e.g. Contoso, Zava' }, example: 'e.g. Contoso, Zava', patterns: ['p2','p3'], hintByPattern: { p2: 'The name of your organisation or the primary entity that owns this integration. Use a short recognisable abbreviation if the full name is long. In the MSP pattern this identifies the customer tenant this registration belongs to — use the same name consistently across all registrations for that customer.', p3: 'The name of the customer tenant this app registration belongs to. Use the same customer name consistently across all registrations for that tenant — this is the primary identifier when managing multiple customers as an MSP. Use a short recognisable abbreviation if the full name is long.' }, hint: 'The name of your organisation or the primary entity that owns this integration. Use a short recognisable abbreviation if the full name is long. In the MSP pattern this identifies the customer tenant this registration belongs to — use the same name consistently across all registrations for that customer.' },
             { id: 'tool',        type: 'text',   label: 'Tool / Service Name',  placeholderByPattern: { p3: 'e.g. Intune, Veeam, Salesforce' }, example: 'e.g. Intune, Veeam, Salesforce', patterns: ['p1','p2','p3','p4'], hint: 'The name of the third-party application or Microsoft service this app registration represents. Use the vendor official product name for consistency, for example Veeam, Salesforce, PowerBI, or Intune.' },
             { id: 'function',    type: 'text',   label: 'Function / Purpose',   example: 'e.g. Backup, Reporting, SSO', patterns: ['p1','p2'], hint: 'Describes what this app registration does or enables. Use a concise action-based noun such as Backup, Reporting, or SSO rather than a full sentence. For authentication-only registrations use SSO as the function.' },
             { id: 'department',  type: 'text',   label: 'Department',           example: 'e.g. IT, Security, Finance, HR', patterns: ['p2'], hint: 'The business unit or team responsible for this integration. Helps filter and identify ownership in large organisations with multiple app registrations. Use the official department abbreviation for consistency.' },
@@ -928,23 +930,15 @@ const CONFIG = {
             {
                 id: 'p1',
                 name: 'CA[NNN]-[Target]-[Scope]-[Effect]-[Platform]-[Condition]-[Version]',
-                desc: 'Full context pattern following the Entra ID Conditional Access wizard order. Platform supports multiple selections. Condition supports multiple selections and includes location conditions. Effect is derived automatically from Grant and Session control selections. Version is optional.',
+                desc: 'Use for full context policies. Includes Platform and Version segments not available in the Microsoft Recommended pattern. Recommended when platform-specific targeting or change tracking is required.',
                 badge: 'EXTENDED', badgeColor: 'blue',
                 segments: ['number', 'target', 'cloudApps', 'grantControl', 'sessionControl', 'platform', 'condition', 'version'],
                 numberPrefix: 'CA'
             },
             {
-                id: 'p3',
-                name: 'CA[NNN]-[Target]-[Scope]-[Effect]-[Condition]-[Version]',
-                desc: 'Compact pattern with only the essential segments. Omits Platform for brevity. Best for broad global policies that apply to all users and all apps. Location conditions are available via the Condition field. Version is optional.',
-                badge: 'COMPACT', badgeColor: 'gray',
-                segments: ['number', 'target', 'cloudApps', 'grantControl', 'sessionControl', 'condition', 'version'],
-                numberPrefix: 'CA'
-            },
-            {
                 id: 'p2',
                 name: 'CA[NNN]-[Scope]-[Effect]-[Target]-[Condition]',
-                desc: 'Based on the naming standard recommended in the official Microsoft Entra ID Conditional Access deployment guide. Follows the sequence: number, scope, effect, target, condition. Does not include Platform or Version segments. Condition supports multiple selections including location conditions.',
+                desc: 'Use when following Microsoft official naming standard from the Entra ID deployment guide.',
                 badge: 'MICROSOFT RECOMMENDED', badgeColor: '',
                 source: 'Microsoft Learn: Plan a Conditional Access deployment',
                 sourceUrl: 'https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#set-naming-standards-for-your-policies',
@@ -954,12 +948,12 @@ const CONFIG = {
             },
             {
                 id: 'p4',
-                name: 'EM[NNN]-EnableInEmergency-[Disruption]-[AppCategory]-[Controls]',
-                desc: 'Break-glass / contingency policy for outage and disruption scenarios. Keep in Report-Only mode until activation is required.',
+                name: 'EM[NNN]-EnableInEmergency-[Disruption][i of n]-[Apps]-[Effect]-[Platform]-[Condition]',
+                desc: 'Use for break-glass contingency policies. Keep in Report-Only mode until a disruption occurs.',
                 badge: 'EMERGENCY', badgeColor: 'emergency',
                 source: 'Microsoft Learn: Resilient access control management strategy',
                 sourceUrl: 'https://learn.microsoft.com/entra/identity/authentication/concept-resilient-controls#before-a-disruption',
-                segments: ['number', 'disruption', 'appCategory', 'controls'],
+                segments: ['number', 'disruption', 'disruptionIndex', 'disruptionTotal', 'appCategory', 'grantControl', 'platform', 'condition'],
                 numberPrefix: 'EM',
                 fixedInfix: { afterIndex: 0, value: 'EnableInEmergency' },
                 emergency: true
@@ -989,7 +983,7 @@ const CONFIG = {
                 { value: 'Custom',          label: 'Custom' }
               ],
               subField: { triggerValue: 'Custom', id: 'grantControlCustom', label: 'Custom Grant Control', placeholder: 'e.g. TermsOfUse, RiskRemediation' },
-              patterns: ['p1','p2','p3'], hint: 'Select Block Access to deny access entirely — all other grant controls will be disabled. Otherwise select one or more controls to enforce when access is allowed. MFA and Authentication Strength are mutually exclusive. Require Password Change cannot be combined with other grant controls. Use AND to require all selected controls, or OR to require at least one.' },
+              patterns: ['p1','p2','p3','p4'], hint: 'Select Block Access to deny access entirely — all other grant controls will be disabled. Otherwise select one or more controls to enforce when access is allowed. MFA and Authentication Strength are mutually exclusive. Require Password Change cannot be combined with other grant controls. Use AND to require all selected controls, or OR to require at least one.' },
             { id: 'sessionControl', label: 'Session', type: 'multiselect', keepCase: true,
               options: [
                 { value: 'AppRestrictions',   label: 'App Enforced Restrictions' },
@@ -1013,7 +1007,7 @@ const CONFIG = {
                 { value: 'Custom',               label: 'Custom' }
               ],
               subField: { triggerValue: 'Custom', id: 'targetCustom', label: 'Identity Name', placeholder: 'Enter a group name, agent identity, or service principal name' },
-              example: 'e.g. AllUsers, Admins', patterns: ['p1','p2','p3'], hint: 'The users, agents, or workload identities this policy applies to. Use All Users for baseline policies and narrow down with specific roles or groups for targeted policies. Use All Owned Service Principals or All Agent Identities for policies targeting workload identities. Select Named Identity to enter a specific security group, service principal, or agent identity name. Always exclude emergency access accounts from every policy.' },
+              example: 'e.g. AllUsers, Admins', patterns: ['p1','p2','p3'], hint: 'The users, agents, or workload identities this policy applies to. Use All Users for baseline policies and narrow down with specific roles or groups for targeted policies. Use All Owned Service Principals or All Agent Identities for policies targeting workload identities. Select Custom to enter a specific security group, service principal, or agent identity name. Always exclude emergency access accounts from every policy.' },
             { id: 'platform',  label: 'Platform',              type: 'multiselect',
               options: [
                 { value: 'AnyPlatform', label: 'Any Platform', exclusive: true },
@@ -1023,7 +1017,7 @@ const CONFIG = {
                 { value: 'macOS',       label: 'macOS' },
                 { value: 'Linux',       label: 'Linux' }
               ],
-              patterns: ['p1'], hint: 'The device operating system(s) this policy targets. Select Any Platform for broad policies. Select one or more specific platforms when policy requirements differ per operating system. Multiple selections are joined with the same separator used for the rest of the policy name.' },
+              patterns: ['p1','p4'], hint: 'The device operating system(s) this policy targets. Select Any Platform for broad policies. Select one or more specific platforms when policy requirements differ per operating system. Multiple selections are joined with the same separator used for the rest of the policy name.' },
             { id: 'condition', label: 'Condition / When',      type: 'multiselect',
               options: [
                 { value: 'LegacyAuth',          label: 'Legacy Authentication' },
@@ -1038,28 +1032,30 @@ const CONFIG = {
                 { value: 'Custom',              label: 'Custom' }
               ],
               subField: { triggerValue: 'Custom', id: 'conditionCustom', label: 'Custom Condition', placeholder: 'e.g. AuthFlow, PasswordlessOnly' },
-              patterns: ['p1','p2','p3'], hint: 'The conditions that trigger this policy. Select one or more conditions that apply. Location conditions (Trusted Location, Non-Trusted Location, Blocked Locations) can be combined with other conditions. Multiple selections are joined with the same separator used for the rest of the policy name.' },
-            { id: 'version',   label: 'Version',               type: 'text',     example: 'e.g. v1.0, v1.1, v2.0', patterns: ['p1','p3'], hint: 'An optional version identifier to track policy changes over time. Use semantic versioning (e.g. v1.0, v1.1) and increment the minor version for small changes and the major version for significant restructuring. Helps with change management and audit trails.' },
+              patterns: ['p1','p2','p3','p4'], hint: 'The conditions that trigger this policy. Select one or more conditions that apply. Location conditions (Trusted Location, Non-Trusted Location, Blocked Locations) can be combined with other conditions. Multiple selections are joined with the same separator used for the rest of the policy name.' },
+            { id: 'version',   label: 'Version',               type: 'text',     example: 'e.g. v1.0, v1.1, v2.0', patterns: ['p1'], hint: 'An optional version identifier to track policy changes over time. Use semantic versioning (e.g. v1.0, v1.1) and increment the minor version for small changes and the major version for significant restructuring. Helps with change management and audit trails.' },
             { id: 'disruption', label: 'Disruption Type', type: 'select',
               options: [
-                { value: 'MFAOutage',               label: 'MFA Outage' },
-                { value: 'ThirdPartyMFAOutage',     label: 'Third-Party MFA Outage' },
+                { value: 'MFAServiceOutage',        label: 'MFA Outage' },
+                { value: 'ExtMFAOutage',            label: 'External MFA Outage' },
                 { value: 'DeviceComplianceOutage',  label: 'Device Compliance Outage' },
-                { value: 'RiskBasedControlsOutage', label: 'Risk-Based Controls Outage' },
-                { value: 'NetworkOutage',           label: 'Network Outage' },
+                { value: 'IDProtectionOutage',      label: 'ID Protection Outage' },
+                { value: 'NamedLocationOutage',     label: 'Named Location Outage' },
                 { value: 'Custom',                  label: 'Custom' }
               ],
               subField: { triggerValue: 'Custom', id: 'disruptionCustom', label: 'Custom Disruption', placeholder: 'e.g. CustomDisruption' },
-              patterns: ['p4'], hint: 'The access control mechanism that is disrupted or unavailable. A contingency CA policy is a backup policy that omits Microsoft Entra MFA, third-party MFA, risk-based, or device-based controls. Select the control type that has failed: MFA Outage for Microsoft Entra MFA, Third-Party MFA Outage for external MFA providers, Device Compliance Outage for Intune or Hybrid Join, Risk-Based Controls Outage for Microsoft Entra ID Protection policies, or Network Outage for named locations or VPN.' },
-            { id: 'appCategory', label: 'App Category',         type: 'select',
+              patterns: ['p4'], hint: 'The access control mechanism that is disrupted or unavailable. MFA Outage: Microsoft Entra MFA is unreachable. External MFA Outage: third-party MFA provider is unreachable. Device Compliance Outage: Intune or Hybrid Join compliance checks are unavailable. ID Protection Outage: Entra ID Protection risk-based controls are unavailable. Named Location Outage: named locations or VPN-based conditions cannot be evaluated. Select Custom to describe a disruption not covered by the predefined options.' },
+            { id: 'disruptionIndex', label: 'Disruption Index', type: 'number-pair', patterns: ['p4'], hint: 'An optional sequence number appended directly to the Disruption value without a separator. Enter the current index and the total number of policies for this disruption type to produce values like 1of2 or 2of2. Leave both blank if this is the only policy for this disruption type.' },
+            { id: 'disruptionTotal', label: 'Disruption Total', type: 'text',        patterns: ['p4'] },
+            { id: 'appCategory', label: 'Apps',                  type: 'select',
               options: [
-                { value: 'MissionCritical', label: 'Category 1 — Mission Critical' },
-                { value: 'Important',       label: 'Category 2 — Important' },
-                { value: 'LowPriority',     label: 'Category 3 — Low Priority' },
-                { value: 'Custom',          label: 'Custom' }
+                { value: 'MissionCriticalApps', label: 'Mission Critical Apps' },
+                { value: 'ImportantApps',       label: 'Important Apps' },
+                { value: 'LowPriorityApps',     label: 'Low Priority Apps' },
+                { value: 'Custom',              label: 'Custom' }
               ],
-              subField: { triggerValue: 'Custom', id: 'appCategoryCustom', label: 'Custom Category', placeholder: 'e.g. Regulated, PartnerFacing' },
-              patterns: ['p4'], hint: 'The Microsoft-recommended app category for contingency planning. Category 1: mission critical apps that cannot be unavailable for more than a few minutes — for example, apps that directly affect revenue. Category 2: important apps the business needs accessible within a few hours. Category 3: low-priority apps that can withstand a disruption of a few days. Select Custom to enter a category name specific to your organization. The value shown in the policy name is concise (e.g. MissionCritical) while the dropdown label remains descriptive.' },
+              subField: { triggerValue: 'Custom', id: 'appCategoryCustom', label: 'Custom Apps', placeholder: 'e.g. Salesforce, ExchangeSharePoint, AllApps, Teams' },
+              patterns: ['p4'], hint: 'The application or group of applications this contingency policy applies to. Select a predefined category if the policy covers a broad set of apps by priority tier, or select Custom to enter a specific application name as used in the policy name — for example Salesforce, ExchangeSharePoint, or AllApps. Microsoft recommends categorising apps as Mission Critical (unavailable for more than a few minutes), Important (accessible within a few hours), or Low Priority (can withstand a disruption of a few days).' },
             { id: 'controls',  label: 'Controls',              type: 'select',
               options: [
                 { value: 'HybridJoinOnly',      label: 'Hybrid Join Only' },
@@ -1071,7 +1067,7 @@ const CONFIG = {
                 { value: 'Custom',              label: 'Custom' }
               ],
               subField: { triggerValue: 'Custom', id: 'controlsCustom', label: 'Custom Control', placeholder: 'e.g. CustomControl' },
-              patterns: ['p4'], hint: 'The access controls applied or relaxed during the emergency scenario. Keep it concise so the policy name remains readable at a glance.' }
+              patterns: [], hint: 'The access controls applied or relaxed during the emergency scenario. Keep it concise so the policy name remains readable at a glance.' }
         ]
     },
 
@@ -1321,6 +1317,54 @@ function renderFields() {
     const allFields     = CONFIG[state.type].fields;
 
     segmentOrder.map(id => allFields.find(f => f.id === id)).filter(Boolean).forEach(field => {
+            // disruptionTotal is rendered inline with disruptionIndex — skip standalone rendering
+            if (field.id === 'disruptionTotal') return;
+
+            // disruptionIndex: render an inline index/total pair
+            if (field.id === 'disruptionIndex') {
+                const pairWrap = document.createElement('div');
+                pairWrap.className = 'field-group';
+
+                const pairLbl = document.createElement('label');
+                pairLbl.textContent = 'Disruption Index (optional)';
+                const pairHint = document.createElement('span');
+                pairHint.className = 'field-hint';
+                pairHint.setAttribute('data-hint', 'An optional sequence number appended directly to the Disruption value. Enter the index and total to produce values like 1of2 or 2of2. Leave both blank if this is the only policy for this disruption type.');
+                pairHint.textContent = 'i';
+                pairLbl.appendChild(pairHint);
+
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex; align-items:center; gap:8px;';
+
+                const idxIn = document.createElement('input');
+                idxIn.type = 'text';
+                idxIn.id = 'fld_disruptionIndex';
+                idxIn.placeholder = 'e.g. 1';
+                idxIn.autocomplete = 'off';
+                idxIn.style.width = '70px';
+                idxIn.addEventListener('input', updatePreview);
+
+                const ofSpan = document.createElement('span');
+                ofSpan.textContent = 'of';
+                ofSpan.style.cssText = 'font-size:13px; color:var(--gray); flex-shrink:0;';
+
+                const totIn = document.createElement('input');
+                totIn.type = 'text';
+                totIn.id = 'fld_disruptionTotal';
+                totIn.placeholder = 'e.g. 2';
+                totIn.autocomplete = 'off';
+                totIn.style.width = '70px';
+                totIn.addEventListener('input', updatePreview);
+
+                row.appendChild(idxIn);
+                row.appendChild(ofSpan);
+                row.appendChild(totIn);
+                pairWrap.appendChild(pairLbl);
+                pairWrap.appendChild(row);
+                container.appendChild(pairWrap);
+                return;
+            }
+
             const wrap  = document.createElement('div');
             wrap.className = 'field-group';
 
@@ -1523,7 +1567,7 @@ function generateName() {
         segs.push({ value: pattern.fixedPrefix, fixed: true });
     }
 
-    const useEffectMapping = state.type === 'ca-policy' && (state.pattern === 'p1' || state.pattern === 'p2' || state.pattern === 'p3');
+    const useEffectMapping = state.type === 'ca-policy' && (state.pattern === 'p1' || state.pattern === 'p2' || state.pattern === 'p3' || state.pattern === 'p4');
 
     pattern.segments.forEach(segId => {
         const field = type.fields.find(f => f.id === segId);
@@ -1536,6 +1580,33 @@ function generateName() {
             if (vals.length) segs.push({ value: vals.join(sep), fixed: false });
             return;
         }
+
+        // ── Disruption (p4): value + optional index/total suffix ──────
+        if (segId === 'disruption' && state.pattern === 'p4') {
+            const el = document.getElementById('fld_disruption');
+            if (!el) return;
+            const raw = el.value.trim();
+            if (!raw) return;
+            let disruptionVal;
+            if (raw === 'Custom') {
+                const subEl = document.getElementById('fld_disruptionCustom');
+                const cv = subEl?.value?.trim();
+                if (!cv) return;
+                disruptionVal = applyCase(sanitize(cv), casing);
+            } else {
+                disruptionVal = applyCase(raw, casing);
+            }
+            const idxRaw = document.getElementById('fld_disruptionIndex')?.value?.trim().replace(/[^0-9]/g, '') || '';
+            const totRaw = document.getElementById('fld_disruptionTotal')?.value?.trim().replace(/[^0-9]/g, '') || '';
+            let suffix = '';
+            if (idxRaw && totRaw) suffix = idxRaw + applyCase('of', casing) + totRaw;
+            else if (idxRaw)      suffix = idxRaw;
+            segs.push({ value: disruptionVal + suffix, fixed: false });
+            return;
+        }
+
+        // disruptionIndex and disruptionTotal are consumed by the disruption handler above
+        if (segId === 'disruptionIndex' || segId === 'disruptionTotal') return;
 
         // ── Condition multiselect: join checked values with sep ────
         if (segId === 'condition') {
